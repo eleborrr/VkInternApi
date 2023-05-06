@@ -4,7 +4,7 @@ namespace VkInternApi.Services.Auth;
 
 public class BasicAuthenticationClient: IIdentity
 {
-    public string? AuthenticationType { get; }
-    public bool IsAuthenticated { get; }
-    public string? Name { get; }
+    public string? AuthenticationType { get; init; }
+    public bool IsAuthenticated { get; init; }
+    public string? Name { get; init; }
 }

@@ -1,6 +1,8 @@
-﻿namespace VkInternApi.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public class AuthController
+namespace VkInternApi.Controllers;
+
+public class AuthController: Controller
 {
     
 }
