@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using VkInternApi.Data;
+using VkInternApi.Entities;
 using VkInternApi.Services.Auth.Attributes;
 
 namespace VkInternApi.Controllers;
@@ -6,20 +9,24 @@ namespace VkInternApi.Controllers;
 [Route("[controller]")]
 public class UserController: Controller
 {
-    [BasicAuthorization]
-    [HttpPost]
-    public IActionResult GetUserByIdAsync()
+    private ApplicationDbContext _dbContext;
+    
+    public UserController(ApplicationDbContext dbContext)
     {
-        return Ok();
+        _dbContext = dbContext;
     }
+        
     
     [BasicAuthorization]
     [HttpPost]
-    public IActionResult GetUsersAsync()
-    {
-        return Ok();
-    }
-    
+    public async Task<JsonResult> GetUserByIdAsync(int id) =>
+        Json(await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id));
+
+
+    [BasicAuthorization]
+    [HttpPost]
+    public async Task<JsonResult> GetUsersAsync() => Json(_dbContext.Users);
+
     [BasicAuthorization]
     [HttpPost]
     public IActionResult AddUserAsync()
