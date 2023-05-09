@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using VkInternApi.Data;
 using VkInternApi.Data.Repositories;
 using VkInternApi.Data.Repositories.UserRep;
 using VkInternApi.Services.Auth;
@@ -15,6 +17,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication()
     .AddScheme<AuthenticationSchemeOptions, BasicAuthorizationService>(BasicAuthenticationDefaults.AuthenticationScheme,
         null);
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("VkInternDB")));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -29,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

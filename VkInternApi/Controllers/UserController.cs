@@ -20,21 +20,21 @@ public class UserController: Controller
         _userService = userService;
     }
     
-    [HttpPost]
-    public async Task<JsonResult> GetUserByIdAsync(int id) =>
+    [HttpPost("/getUser")]
+    public async Task<JsonResult> GetUserByIdAsync([FromQuery] int id) =>
         Json(await _userService.GetUserById(id));
 
 
-    [HttpPost]
+    [HttpPost("/getAllUsers")]
     public async Task<JsonResult> GetUsersAsync() => Json(await _userService.GetAllAsync());
 
-    [HttpPost]
+    [HttpPost("/addUser")]
     public async Task<JsonResult> AddUserAsync([FromBody] AddUserDto dto)
     {
         return Json(await _userService.AddUser(dto));
     }
     
-    [HttpPost]
+    [HttpPost("/deleteUser")]
     public async Task<JsonResult> DeleteUserByIdAsync([FromBody] DeleteUserDto dto)
     {
         return Json(await _userService.DeleteUser(dto));
