@@ -59,7 +59,7 @@ public class UserService: IUserService
         return result;
     }
 
-    public async Task<bool> AddUser(AddUserDto dto)
+    public async Task<UserChangeResponseDto> AddUser(AddUserDto dto)
     {
         var user = new Entities.User
         {
@@ -69,16 +69,27 @@ public class UserService: IUserService
             UserStateId = dto.UserStateId,
             UserGroupId = dto.UserGroupId
         };
+
+        var adminGroup = (await _repositoryManager.UserGroupRepository.GetAllAsync())
+            .FirstOrDefault(s => s.Code == "Admin");
+
+        var usersGroup = await _repositoryManager.UserGroupRepository.GetUserGroupById(user.UserGroupId);
+
+        if (usersGroup is not null && usersGroup.Code == "Admin" && adminGroup is not null &&
+            adminGroup.Code == "Admin")
+            return new UserChangeResponseDto(){IsSuccessful = false, Message = "Can't create another Admin"};
+        
+        
         await _repositoryManager.UserRepository.AddAsync(user);
-        return true;
+        return new UserChangeResponseDto(){IsSuccessful = true, Message = "Successful user adding"};
     }
 
-    public async Task<bool> DeleteUser(DeleteUserDto dto)
+    public async Task<UserChangeResponseDto> DeleteUser(DeleteUserDto dto)
     {
         var user = await _repositoryManager.UserRepository.GetUserById(dto.Id);
         if (user is null)
-            return false;
+            return new UserChangeResponseDto(){IsSuccessful = false, Message = "Can't find user by this id"};
         await _repositoryManager.UserRepository.RemoveAsync(user);
-        return true;
+        return new UserChangeResponseDto(){IsSuccessful = true, Message = "User has been successfully deleted"};
     }
 }
