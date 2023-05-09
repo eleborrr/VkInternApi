@@ -1,26 +1,62 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using VkInternApi.Data.Dto;
+﻿using VkInternApi.Data.Dto;
 using VkInternApi.Data.Repositories;
 
 namespace VkInternApi.Services.User;
 
 public class UserService: IUserService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IRepositoryManager _repositoryManager;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IRepositoryManager repositoryManager)
     {
-        _userRepository = userRepository;
+        _repositoryManager = repositoryManager;
     }
 
-    public async Task<Entities.User> GetUserById(int id)
+    public async Task<ShowUserDto> GetUserById(int id)
     {
-        return await _userRepository.GetUserById(id);
+        var user = await _repositoryManager.UserRepository.GetUserById(id);
+        var user_group = await _repositoryManager.UserGroupRepository.GetUserGroupById(user.UserGroupId);
+        var user_state = await _repositoryManager.UserStateRepository.GetUserStateById(user.UserStateId);
+        var dto = new ShowUserDto()
+        {
+            Id = user.Id,
+            Login = user.Login,
+            Password = user.Password,
+            CreatedDate = user.CreatedDate,
+            UserGroupId = user.UserGroupId,
+            UserStateId = user.UserStateId,
+            GroupCode = user_group.Code,
+            GroupDescription = user_group.Description,
+            StateCode = user_state.Code,
+            StateDescription = user_state.Description
+        };
+        return dto;
     }
 
-    public async Task<IEnumerable<Entities.User>> GetAllAsync()
+    public async Task<IEnumerable<ShowUserDto>> GetAllAsync()
     {
-        return await _userRepository.GetAllAsync();
+        var users = await _repositoryManager.UserRepository.GetAllAsync();
+        var result = new List<ShowUserDto>();
+        foreach (var user in users)
+        {
+            var user_group = await _repositoryManager.UserGroupRepository.GetUserGroupById(user.UserGroupId);
+            var user_state = await _repositoryManager.UserStateRepository.GetUserStateById(user.UserStateId);
+            result.Add(new ShowUserDto
+            {
+                Id = user.Id,
+                Login = user.Login,
+                Password = user.Password,
+                CreatedDate = user.CreatedDate,
+                UserGroupId = user.UserGroupId,
+                UserStateId = user.UserStateId,
+                GroupCode = user_group.Code,
+                GroupDescription = user_group.Description,
+                StateCode = user_state.Code,
+                StateDescription = user_state.Description
+            });
+        }
+
+        return result;
     }
 
     public async Task<bool> AddUser(AddUserDto dto)
@@ -33,16 +69,16 @@ public class UserService: IUserService
             UserStateId = dto.UserStateId,
             UserGroupId = dto.UserGroupId
         };
-        await _userRepository.AddAsync(user);
+        await _repositoryManager.UserRepository.AddAsync(user);
         return true;
     }
 
     public async Task<bool> DeleteUser(DeleteUserDto dto)
     {
-        var user = await _userRepository.GetUserById(dto.Id);
+        var user = await _repositoryManager.UserRepository.GetUserById(dto.Id);
         if (user is null)
             return false;
-        await _userRepository.RemoveAsync(user);
+        await _repositoryManager.UserRepository.RemoveAsync(user);
         return true;
     }
 }
