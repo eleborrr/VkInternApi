@@ -1,4 +1,5 @@
 ﻿using VkInternApi.Data.Repositories.UserGroupRep;
+using VkInternApi.Data.Repositories.UserRep;
 using VkInternApi.Data.Repositories.UserStateRep;
 
 namespace VkInternApi.Data.Repositories;

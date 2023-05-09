@@ -1,6 +1,6 @@
 ﻿using VkInternApi.Entities;
 
-namespace VkInternApi.Data.Repositories;
+namespace VkInternApi.Data.Repositories.UserRep;
 
 public interface IUserRepository
 {

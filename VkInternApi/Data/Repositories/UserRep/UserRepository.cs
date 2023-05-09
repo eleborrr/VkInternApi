@@ -19,11 +19,22 @@ public class UserRepository: IUserRepository
     {
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
+        Thread.Sleep(5000);
     }
 
     public async Task RemoveAsync(User user)
     {
-        // _dbContext.Entry(user).CurrentValues.SetValues();
+        var userInactive = new User
+        {
+            Id = user.Id,
+            CreatedDate = user.CreatedDate,
+            Login = user.Login,
+            Password = user.Password,
+            UserStateId = user.UserStateId,
+            UserGroupId = user.UserGroupId,
+            Active = false
+        };
+        _dbContext.Entry(user).CurrentValues.SetValues(userInactive);
         await _dbContext.SaveChangesAsync();
     }
 }
