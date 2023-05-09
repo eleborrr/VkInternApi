@@ -28,7 +28,8 @@ public class UserService: IUserService
             GroupCode = user_group.Code,
             GroupDescription = user_group.Description,
             StateCode = user_state.Code,
-            StateDescription = user_state.Description
+            StateDescription = user_state.Description,
+            Active = user.Active
         };
         return dto;
     }
@@ -52,7 +53,8 @@ public class UserService: IUserService
                 GroupCode = user_group.Code,
                 GroupDescription = user_group.Description,
                 StateCode = user_state.Code,
-                StateDescription = user_state.Description
+                StateDescription = user_state.Description,
+                Active = user.Active
             });
         }
 
@@ -67,7 +69,8 @@ public class UserService: IUserService
             Password = dto.Password,
             Login = dto.Login,
             UserStateId = dto.UserStateId,
-            UserGroupId = dto.UserGroupId
+            UserGroupId = dto.UserGroupId,
+            Active = true
         };
 
         var adminGroup = (await _repositoryManager.UserGroupRepository.GetAllAsync())

@@ -12,4 +12,5 @@ public class ShowUserDto
     public string GroupDescription { get; set; }
     public string StateCode { get; set; }
     public string StateDescription { get; set; }
+    public bool Active { get; set; }
 }
