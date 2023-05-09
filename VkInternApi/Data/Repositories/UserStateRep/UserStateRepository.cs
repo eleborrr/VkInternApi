@@ -1,4 +1,5 @@
-﻿using VkInternApi.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using VkInternApi.Entities;
 
 namespace VkInternApi.Data.Repositories.UserStateRep;
 
@@ -11,23 +12,23 @@ public class UserStateRepository: IUserStateRepository
         _dbContext = dbContext;
     }
     
-    public Task<UserState?> GetUserStateById(int id)
+    public async Task<UserState?> GetUserStateById(int id)
     {
-        throw new NotImplementedException();
+        return _dbContext.UserStates.FirstOrDefault(s => s.Id == id);
     }
 
-    public Task<IEnumerable<UserState>> GetAllAsync()
+    public async Task<IEnumerable<UserState>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _dbContext.UserStates.ToListAsync();
     }
 
-    public Task AddAsync(UserState userState)
+    public async Task AddAsync(UserState userState)
     {
-        throw new NotImplementedException();
-    }
+        _dbContext.UserStates.Add(userState);
+        await _dbContext.SaveChangesAsync();    }
 
-    public Task RemoveAsync(UserState userState)
-    {
-        throw new NotImplementedException();
-    }
+    // public Task RemoveAsync(UserState userState)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }

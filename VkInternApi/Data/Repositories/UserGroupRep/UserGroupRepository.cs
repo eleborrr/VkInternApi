@@ -1,4 +1,5 @@
-﻿using VkInternApi.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using VkInternApi.Entities;
 
 namespace VkInternApi.Data.Repositories.UserGroupRep;
 
@@ -11,23 +12,20 @@ public class UserGroupRepository: IUserGroupRepository
         _dbContext = dbContext;
     }
     
-    public Task<UserGroup?> GetUserGroupById(int id)
+    public async Task<UserGroup?> GetUserGroupById(int id)
     {
-        throw new NotImplementedException();
+        return _dbContext.UserGroups.FirstOrDefault(g => g.Id == id);
     }
 
-    public Task<IEnumerable<UserGroup>> GetAllAsync()
+    public async Task<IEnumerable<UserGroup>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _dbContext.UserGroups.ToListAsync();
     }
 
-    public Task AddAsync(UserGroup userGroup)
+    public async Task AddAsync(UserGroup userGroup)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task RemoveAsync(UserGroup userGroup)
-    {
-        throw new NotImplementedException();
+        _dbContext.UserGroups.Add(userGroup);
+        await _dbContext.SaveChangesAsync();
+        
     }
 }
