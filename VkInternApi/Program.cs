@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Authentication;
+using VkInternApi.Data.Repositories;
+using VkInternApi.Data.Repositories.UserRep;
 using VkInternApi.Services.Auth;
+using VkInternApi.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication()
     .AddScheme<AuthenticationSchemeOptions, BasicAuthorizationService>(BasicAuthenticationDefaults.AuthenticationScheme,
         null);
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

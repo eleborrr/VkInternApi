@@ -1,43 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using VkInternApi.Data;
+using VkInternApi.Data.Dto;
 using VkInternApi.Entities;
 using VkInternApi.Services.Auth.Attributes;
+using VkInternApi.Services.User;
 
 namespace VkInternApi.Controllers;
 
 [Route("[controller]")]
+[BasicAuthorization]
 public class UserController: Controller
 {
-    private ApplicationDbContext _dbContext;
+    private readonly IUserService _userService;
     
-    public UserController(ApplicationDbContext dbContext)
+    public UserController(IUserService userService)
     {
-        _dbContext = dbContext;
+        _userService = userService;
     }
-        
     
-    [BasicAuthorization]
     [HttpPost]
     public async Task<JsonResult> GetUserByIdAsync(int id) =>
-        Json(await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id));
+        Json(await _userService.GetUserById(id));
 
 
-    [BasicAuthorization]
     [HttpPost]
-    public async Task<JsonResult> GetUsersAsync() => Json(_dbContext.Users);
+    public async Task<JsonResult> GetUsersAsync() => Json(await _userService.GetAllAsync());
 
-    [BasicAuthorization]
     [HttpPost]
-    public IActionResult AddUserAsync()
+    public async Task<JsonResult> AddUserAsync([FromBody] AddUserDto dto)
     {
-        return Ok();
+        return Json(await _userService.AddUser(dto));
     }
     
-    [BasicAuthorization]
     [HttpPost]
-    public IActionResult DeleteUserByIdAsync()
+    public async Task<JsonResult> DeleteUserByIdAsync([FromBody] DeleteUserDto dto)
     {
-        return Ok();
+        return Json(await _userService.DeleteUser(dto));
     }
 }
