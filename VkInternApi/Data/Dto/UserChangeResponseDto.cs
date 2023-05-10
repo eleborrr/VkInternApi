@@ -2,11 +2,11 @@
 
 public class UserChangeResponseDto
 {
-    public UserChangeResponseDto(bool isSuccessful, string message)
+    public UserChangeResponseDto(int statusCode, string message)
     {
-        IsSuccessful = isSuccessful;
+        StatusCode = statusCode;
         Message = message;
     }
-    public bool IsSuccessful { get; set; }
+    public int StatusCode { get; set; }
     public string Message { get; set; }
 }

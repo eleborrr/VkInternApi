@@ -81,22 +81,22 @@ public class UserService: IUserService
 
         if (usersGroup is not null && usersGroup.Code == "Admin" && adminGroup is not null &&
             adminGroup.Code == "Admin")
-            return new UserChangeResponseDto(false, "Can't create another Admin");
+            return new UserChangeResponseDto(400, "Can't create another Admin");
 
         if ((await _repositoryManager.UserRepository.GetAllAsync())
             .FirstOrDefault(u => u.Login == user.Login) is not null)
-            return new UserChangeResponseDto(false, "A user with this login already exists");
+            return new UserChangeResponseDto(400, "A user with this login already exists");
         
         await _repositoryManager.UserRepository.AddAsync(user);
-        return new UserChangeResponseDto(true, "Successful user adding");
+        return new UserChangeResponseDto(200, "Successful user adding");
     }
 
     public async Task<UserChangeResponseDto> DeleteUser(DeleteUserDto dto)
     {
         var user = await _repositoryManager.UserRepository.GetUserById(dto.Id);
         if (user is null)
-            return new UserChangeResponseDto(false, "Can't find user by this id");
+            return new UserChangeResponseDto(404, "Can't find user by this id");
         await _repositoryManager.UserRepository.RemoveAsync(user);
-        return new UserChangeResponseDto(true, "User has been successfully deleted");
+        return new UserChangeResponseDto(200, "User has been successfully deleted");
     }
 }

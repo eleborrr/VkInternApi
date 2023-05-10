@@ -23,7 +23,7 @@ public class AuthController: Controller
     public async Task<JsonResult> Register([FromBody] RegisterDto dto)
     {
         //TODO убирать blocked пользователей из поиска. Тест на пять секунд.
-        await _userService.AddUser(new AddUserDto()
+        var result = await _userService.AddUser(new AddUserDto()
         {
             CreatedDate = DateTimeOffset.Now,
             Login = dto.Login,
@@ -31,9 +31,7 @@ public class AuthController: Controller
             UserStateId = 1,
             UserGroupId = 1
         });
-        var passwordEncode = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(dto.Login + ":" + dto.Password));
-
-        return Json("Basic " + passwordEncode);
+        return new JsonResult(new { message = result.Message }) { StatusCode = result.StatusCode };
     }
 
 }
