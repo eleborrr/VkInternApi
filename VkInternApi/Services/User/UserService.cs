@@ -1,5 +1,6 @@
 ﻿using VkInternApi.Data.Dto;
 using VkInternApi.Data.Repositories;
+using VkInternApi.Entities;
 
 namespace VkInternApi.Services.User;
 
@@ -34,9 +35,9 @@ public class UserService: IUserService
         return dto;
     }
 
-    public async Task<IEnumerable<ShowUserDto>> GetAllAsync()
+    public async Task<IEnumerable<ShowUserDto>> GetAllAsync(UserParameters userParameters)
     {
-        var users = await _repositoryManager.UserRepository.GetAllAsync();
+        var users = await _repositoryManager.UserRepository.GetUsers(userParameters);
         var result = new List<ShowUserDto>();
         foreach (var user in users)
         {

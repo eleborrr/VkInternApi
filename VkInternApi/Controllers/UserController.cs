@@ -26,7 +26,7 @@ public class UserController: Controller
 
 
     [HttpPost("/getAllUsers")]
-    public async Task<JsonResult> GetUsersAsync() => Json(await _userService.GetAllAsync());
+    public async Task<JsonResult> GetUsersAsync([FromQuery] UserParameters userParameters) => Json(await _userService.GetAllAsync(userParameters));
 
     [HttpPost("/addUser")]
     public async Task<JsonResult> AddUserAsync([FromBody] AddUserDto dto)

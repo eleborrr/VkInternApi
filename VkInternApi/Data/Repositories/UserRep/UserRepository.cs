@@ -13,7 +13,13 @@ public class UserRepository: IUserRepository
     }
 
     public async Task<User?> GetUserById(int id) => _dbContext.Users.FirstOrDefault(u => u.Id == id);
-    public async Task<IEnumerable<User>> GetAllAsync() => await _dbContext.Users.ToListAsync();
+    
+    public async Task<IEnumerable<User>> GetUsers(UserParameters userParameters) => await _dbContext.Users
+        .Skip((userParameters.PageNumber - 1) * userParameters.PageSize)
+        .Take(userParameters.PageSize)
+        .ToListAsync();
+    public async Task<IEnumerable<User>> GetAllAsync() => await _dbContext.Users
+        .ToListAsync();
 
     public async Task AddAsync(User user)
     {

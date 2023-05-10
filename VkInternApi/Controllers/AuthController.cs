@@ -22,6 +22,7 @@ public class AuthController: Controller
     [HttpPost("/register")]
     public async Task<JsonResult> Register([FromBody] RegisterDto dto)
     {
+        //TODO убирать blocked пользователей из поиска. Тест на пять секунд.
         await _userService.AddUser(new AddUserDto()
         {
             CreatedDate = DateTimeOffset.Now,
