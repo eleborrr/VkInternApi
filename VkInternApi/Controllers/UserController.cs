@@ -31,12 +31,14 @@ public class UserController: Controller
     [HttpPost("/addUser")]
     public async Task<JsonResult> AddUserAsync([FromBody] AddUserDto dto)
     {
-        return Json(await _userService.AddUser(dto));
+        var result = await _userService.AddUser(dto);
+        return new JsonResult(new { message = result.Message }) { StatusCode = result.StatusCode };
     }
     
     [HttpPost("/deleteUser")]
     public async Task<JsonResult> DeleteUserByIdAsync([FromBody] DeleteUserDto dto)
     {
-        return Json(await _userService.DeleteUser(dto));
+        var result = await _userService.DeleteUser(dto);
+        return new JsonResult(new { message = result.Message }) { StatusCode = result.StatusCode };
     }
 }
