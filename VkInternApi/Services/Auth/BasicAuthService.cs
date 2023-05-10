@@ -3,13 +3,17 @@ using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
+using VkInternApi.Data.Repositories;
 
 namespace VkInternApi.Services.Auth;
 
 public class BasicAuthorizationService: AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    public BasicAuthorizationService(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+    private readonly IRepositoryManager _repositoryManager;
+    
+    public BasicAuthorizationService(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IRepositoryManager repositoryManager) : base(options, logger, encoder, clock)
     {
+        _repositoryManager = repositoryManager;
     }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -42,12 +46,21 @@ public class BasicAuthorizationService: AuthenticationHandler<AuthenticationSche
         var clientId = authSplit[0];
         var clientSecret = authSplit[1];
 
-        
-        //TODO get from DB
-        // Client ID and secret are incorrect
-        if (clientId != "roundthecode" || clientSecret != "roundthecode")
+
+        // Check user with login in DB
+        var userData = _repositoryManager.UserRepository.GetAllAsync().Result
+            .FirstOrDefault(u => u.Login == clientId);
+        if (userData is null)
         {
-            return Task.FromResult(AuthenticateResult.Fail(string.Format("The secret is incorrect for the client '{0}'", clientId)));
+            return Task.FromResult(
+                AuthenticateResult.Fail("Invalid login or password"));
+        }
+        
+        // Client secret is incorrect
+        if (clientSecret != userData.Password)
+        {
+            return Task.FromResult(
+                AuthenticateResult.Fail("Invalid login or password"));
         }
 
         // Authenicate the client using basic authentication

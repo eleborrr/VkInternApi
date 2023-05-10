@@ -14,7 +14,7 @@ public class AddUserDto
     
     [Required]
     [DataType(DataType.Date)]
-    public DateTime CreatedDate { get; set; }
+    public DateTimeOffset CreatedDate { get; set; }
     
     [Required]
     public int UserGroupId { get; set; }

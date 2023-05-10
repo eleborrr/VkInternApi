@@ -19,8 +19,34 @@ public class ApplicationDbContext: DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>();
-        modelBuilder.Entity<UserGroup>();
-        modelBuilder.Entity<UserState>();
+        modelBuilder.Entity<UserGroup>()
+            .HasData(
+                new UserGroup
+                {
+                    Id = 1,
+                    Code = "User",
+                    Description = "Registered user with limited access"
+                },
+                new UserGroup
+                {
+                    Id = 2,
+                    Code = "Admin",
+                    Description = "Registered user with extended access to add and delete some information"
+                });
+        modelBuilder.Entity<UserState>().HasData(
+            new UserState
+            {
+                Id = 1,
+                Code = "Active",
+                Description = "User can access website"
+            },
+            new UserState
+            {
+                Id = 2,
+                Code = "Blocked",
+                Description = "User has no longer any access"
+            }
+        );
     }
 
     public DbSet<User> Users { get; set; }

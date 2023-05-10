@@ -24,19 +24,15 @@ public class AuthController: Controller
     {
         await _userService.AddUser(new AddUserDto()
         {
-            CreatedDate = DateTime.Now,
+            CreatedDate = DateTimeOffset.Now,
             Login = dto.Login,
             Password = dto.Password,
+            UserStateId = 1,
+            UserGroupId = 1
         });
-        // var passwordEncode = Convert.ToBase64String(dto.Password);
+        var passwordEncode = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(dto.Login + ":" + dto.Password));
 
-        return Json("Ok");
+        return Json("Basic " + passwordEncode);
     }
-    
-    // [HttpPost("/login")]
-    // public async Task<JsonResult> Login()
-    // {
-    //     return Json("asd");
-    // }
-    
+
 }
